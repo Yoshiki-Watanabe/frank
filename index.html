@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="Keywords" content="宇宙,うちゅう,小・中学生,関東,スクール" />
+
+<meta http-equiv="X-UA-Compatible" content="IE=10" />
+
+
+<style>
+@font-face {
+  font-family: 'Jura-Italic';
+  src: url("Jura-Italic.ttf");
+}
+
+p {
+    color: #5d5d5d;
+    font-size: 0.8em;
+    text-shadow: -1px -1px 1px #000000, 1px 1px #ffffff;
+}
+
+</style>
+
+
+<script   src="https://code.jquery.com/jquery-3.0.0.js"   integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo="   crossorigin="anonymous"></script>  
+
+
+</head>
+<body style="margin:0;position:relative;">
+
+<img src="image2.jpg" style="width:600px;" alt="">
+
+<script type="text/javascript">
+  
+
+
+function dispMsg2(str){
+  document.write("<p>");
+  document.write(str);
+  document.write("</p>");
+}
+
+dispMsg2("Hello");
+document.write("<p>Good morning</p>");
+dispMsg2("bye");
+
+
+function setupMessage(){
+
+
+}
+
+setupMessage();
+
+function dispMsg(str,theta,center_x,center_y,r){
+
+  document.write("<p");
+  document.write(" style=");
+
+  
+  document.write("transform:rotate(");
+  document.write(theta);
+
+
+  document.write("deg");
+  document.write(");position:absolute;z-index:2;left:");
+
+          //alert(1+Math.cos(r));
+  document.write(center_x+r*(Math.sin(theta/180*Math.PI)));
+  document.write("px;top:");
+  document.write(center_y-r*(Math.cos(theta/ 180 * Math.PI)));
+  document.write("px;");
+
+
+  document.write(">");
+
+  document.write(str);
+  document.write("</p>");
+
+  theta = theta + 7;
+  return theta;
+}
+
+//image1
+  // var center_x = 275;
+  // var center_y = 270;
+  // var r = 200;
+
+//image2
+  var center_x = 291;
+  var center_y = 217;
+  var r = 174;
+
+  var theta = -70;
+theta = dispMsg("f",theta,center_x,center_y,r);
+theta = dispMsg("r",theta,center_x,center_y,r);
+theta = dispMsg("a",theta,center_x,center_y,r);
+theta = dispMsg("n",theta,center_x,center_y,r);
+theta = dispMsg("k",theta,center_x,center_y,r);
+theta = dispMsg(" ",theta,center_x,center_y,r);
+theta = dispMsg("a",theta,center_x,center_y,r);
+theta = dispMsg("n",theta,center_x,center_y,r);
+theta = dispMsg("d",theta,center_x,center_y,r);
+theta = dispMsg(" ",theta,center_x,center_y,r);
+theta = dispMsg("e",theta,center_x,center_y,r);
+theta = dispMsg("a",theta,center_x,center_y,r);
+theta = dispMsg("s",theta,center_x,center_y,r);
+theta = dispMsg("y",theta,center_x,center_y,r);
+
+
+
+
+</script>
+
+
+</body>
+</html>
