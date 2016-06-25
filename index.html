@@ -30,8 +30,64 @@ p {
 
 <img src="frank_600.jpeg" style="width:600px;" alt="">
 
+
+<form name="js">
+刻印：<input type="text" name="txtb" onkeyup="this.value=this.value.toUpperCase()" value=""><br>
+<input type="button" value="歓迎１" onclick="tbox1()"><br>
+</form>
+
+
 <script type="text/javascript">
   
+
+
+// クラスを定義
+var Bangle = function (theta) {
+  this.theta = theta;
+};
+
+var Bangle_text = new Bangle(-70);
+
+
+Bangle.prototype.setTheta = function(newTheta) {
+  this.theta = newTheta;
+};
+
+Bangle.prototype.tellTheta = function() {
+  console.log("Current theta is " + this.theta);
+};
+
+
+jQuery(document).ready(function() {
+  
+    // ime-modeが使えるか
+    var supportIMEMode = ('ime-mode' in document.body.style);
+  
+    // 非ASCII
+    var noSbcRegex = /[^\x00-\x7E]+/g;
+
+    // 1バイト文字専用フィールド
+  jQuery('.sbc_field')
+  .on('keydown blur paste', function(e) { 
+    
+        // ime-modeが使えるならスキップ
+        if (e.type == 'keydown' || e.type == 'blur')
+            if (supportIMEMode) return;
+    
+        // 2バイト文字が入力されたら削除
+        var target = jQuery(this);
+        if(!target.val().match(noSbcRegex)) return;
+        window.setTimeout( function() {
+          target.val( target.val().replace(noSbcRegex, '') );
+        }, 1);        
+        
+  });
+  
+});
+
+
+
+
 
 
 function dispMsg2(str){
@@ -57,52 +113,85 @@ function dispMsg(str,theta,center_x,center_y,r){
   var a = 0.84;
   var b = 1.05;
 
-  document.write("<p");
-  document.write(" style=");
-
-  
-  document.write("transform:rotate(");
-  document.write(theta);
 
 
-  document.write("deg");
-  document.write(");position:absolute;z-index:2;left:");
+  //onload前
+  if(document.readyState!="complete"){
 
-          //alert(1+Math.cos(r));
 
+    document.write("<p");
+    document.write(" style=");
+
+    
+    document.write("transform:rotate(");
+    document.write(theta);
+
+
+    document.write("deg");
+    document.write(");position:absolute;z-index:2;left:");
+
+            //alert(1+Math.cos(r));
+
+
+  /*
+    document.write(center_x+r*1.03/a*(Math.sin(theta/180*Math.PI)));
+    document.write("px;top:");
+    document.write(center_y-r*1.03/b*(Math.cos(theta/ 180 * Math.PI)));
+    document.write("px;");
+  */
+
+
+  ///best method
+  // -130, -45, -15, 45, 230, 315 [deg]でGaussianによる補正を入れた楕円で近似
+    document.write(center_x+r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/a*(Math.sin(theta/180*Math.PI)));
+    document.write("px;top:");
+    document.write(center_y-r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/b*(Math.cos(theta/ 180 * Math.PI)));
+    document.write("px;");
+
+
+
+  /*
+    document.write(center_x+r/a*(Math.sin(theta/180*Math.PI)));
+    document.write("px;top:");
+    document.write(center_y-r/b*(Math.cos(theta/ 180 * Math.PI)));
+    document.write("px;");
+  */
+
+    document.write(">");
+
+    document.write(str);
+    document.write("</p>");
+
+    theta = theta + 7;
+    return theta;
+
+  }
+
+  else{
+      var element = document.createElement("p");
+
+
+      element.style.cssText="transform:rotate("+theta+"deg"+");position:absolute;z-index:2;left:"+(center_x+r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/a*(Math.sin(theta/180*Math.PI)))+"px;top:"+(center_y-r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/b*(Math.cos(theta/ 180 * Math.PI)))+"px;";
+
+      element.setAttribute('class', 'input_text');
 
 /*
-  document.write(center_x+r*1.03/a*(Math.sin(theta/180*Math.PI)));
-  document.write("px;top:");
-  document.write(center_y-r*1.03/b*(Math.cos(theta/ 180 * Math.PI)));
-  document.write("px;");
+      element.style.cssText = "transform:rotate("+theta+"deg"+");position:absolute;z-index:2;left:"+(center_x+r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/a*(Math.sin(theta/180*Math.PI)))+"px;";
 */
+      element.innerHTML = str;
+      document.body.appendChild(element);
 
+      theta = theta + 7;
+      return theta;
 
-///best method
-// -130, -45, -15, 45, 230, 315 [deg]でGaussianによる補正を入れた楕円で近似
-  document.write(center_x+r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/a*(Math.sin(theta/180*Math.PI)));
-  document.write("px;top:");
-  document.write(center_y-r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/b*(Math.cos(theta/ 180 * Math.PI)));
-  document.write("px;");
+  }
 
-
-
-/*
-  document.write(center_x+r/a*(Math.sin(theta/180*Math.PI)));
-  document.write("px;top:");
-  document.write(center_y-r/b*(Math.cos(theta/ 180 * Math.PI)));
-  document.write("px;");
-*/
-
-  document.write(">");
-
-  document.write(str);
-  document.write("</p>");
-
-  theta = theta + 7;
-  return theta;
 }
+
+
+
+
+
 
 //image1
   // var center_x = 275;
@@ -114,59 +203,26 @@ function dispMsg(str,theta,center_x,center_y,r){
   var center_y = 180;
   var r = 145;
 
-  var theta = -70;
-theta = dispMsg("F",theta,center_x,center_y,r);
-theta = dispMsg("R",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("K",theta,center_x,center_y,r);
-theta = dispMsg(" ",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("D",theta,center_x,center_y,r);
-theta = dispMsg(" ",theta,center_x,center_y,r);
-theta = dispMsg("E",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("S",theta,center_x,center_y,r);
-theta = dispMsg("Y",theta,center_x,center_y,r);
-theta = dispMsg("F",theta,center_x,center_y,r);
-theta = dispMsg("R",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("K",theta,center_x,center_y,r);
-theta = dispMsg(" ",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("D",theta,center_x,center_y,r);
-theta = dispMsg(" ",theta,center_x,center_y,r);
-theta = dispMsg("E",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("S",theta,center_x,center_y,r);
-theta = dispMsg("Y",theta,center_x,center_y,r);
-theta = dispMsg("F",theta,center_x,center_y,r);
-theta = dispMsg("R",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("K",theta,center_x,center_y,r);
-theta = dispMsg(" ",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("D",theta,center_x,center_y,r);
-theta = dispMsg(" ",theta,center_x,center_y,r);
-theta = dispMsg("E",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("S",theta,center_x,center_y,r);
-theta = dispMsg("Y",theta,center_x,center_y,r);
-theta = dispMsg("F",theta,center_x,center_y,r);
-theta = dispMsg("R",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("K",theta,center_x,center_y,r);
-theta = dispMsg(" ",theta,center_x,center_y,r);
-theta = dispMsg("A",theta,center_x,center_y,r);
-theta = dispMsg("N",theta,center_x,center_y,r);
-theta = dispMsg("D",theta,center_x,center_y,r);
+  theta = -70;
 
+
+
+
+
+
+function tbox1(){
+
+  var center_x = 289;
+  var center_y = 180;
+  var r = 145;
+
+  var str1=document.js.txtb.value;
+
+  Bangle_text.setTheta(dispMsg(str1 ,Bangle_text.theta,center_x,center_y,r));
+
+
+
+}
 
 
 </script>
