@@ -14,9 +14,18 @@
 }
 
 p {
+  /* リアルな配色 */
+  /*
     color: #EAE193;
     font-size: 10px;
     text-shadow: -1px -1px 1px #888888, 1px 1px #eeeeee;
+  */
+/* 見やすい配色 */
+    color: #5d5d5d;
+    font-size: 10px;
+    text-shadow: -1px -1px 1px #000000, 1px 1px #ffffff;
+
+
 }
 
 </style>
@@ -32,8 +41,8 @@ p {
 
 
 <form name="js">
-刻印：<input type="text" name="txtb" onkeyup="this.value=this.value.toUpperCase()" value=""><br>
-<input type="button" value="歓迎１" onclick="tbox1()"><br>
+刻印したい文字を入力してください：<input type="text" name="txtb" onkeyup="this.value=this.value.toUpperCase()" value=""><br>
+<input type="button" value="完了" onclick="tbox1()"><br>
 </form>
 
 
@@ -46,18 +55,18 @@ var Bangle = function (theta) {
   this.theta = theta;
 };
 
+// 初期値を-70degとしてインスタンス作成
 var Bangle_text = new Bangle(-70);
 
-
+// 
 Bangle.prototype.setTheta = function(newTheta) {
   this.theta = newTheta;
 };
 
-Bangle.prototype.tellTheta = function() {
-  console.log("Current theta is " + this.theta);
-};
 
 
+
+// chromeでime-mode: dsabledが効かないのでjavascriptで小文字→大文字変換
 jQuery(document).ready(function() {
   
     // ime-modeが使えるか
@@ -108,7 +117,16 @@ function setupMessage(){
 
 setupMessage();
 
-function dispMsg(str,theta,center_x,center_y,r){
+
+/* str:入力文字
+// theta:中心座標からの回転角度
+// center_x:中心のx座標
+// center_y:中心のy座標
+// r:fitting楕円の基本半径
+// charSpace:文字間の幅
+
+*/
+function dispMsg(str,theta,center_x,center_y,r,charSpace){
 
   var a = 0.84;
   var b = 1.05;
@@ -162,16 +180,45 @@ function dispMsg(str,theta,center_x,center_y,r){
     document.write(str);
     document.write("</p>");
 
-    theta = theta + 7;
+    theta = theta + charSpace;
     return theta;
 
   }
 
+// 読み込み後の話
   else{
       var element = document.createElement("p");
 
-
-      element.style.cssText="transform:rotate("+theta+"deg"+");position:absolute;z-index:2;left:"+(center_x+r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/a*(Math.sin(theta/180*Math.PI)))+"px;top:"+(center_y-r*(1+0.03*Math.exp( -Math.pow((theta-45)/20,2) )+0.05*Math.exp( -Math.pow((theta-230)/20,2) )+0.05*Math.exp( -Math.pow((theta+130)/20,2) )+0.01*Math.exp( -Math.pow((theta+15)/20,2) )+0.01*Math.exp( -Math.pow((theta-345)/20,2) )+0.01*Math.exp( -Math.pow((theta+45)/20,2) )+0.01*Math.exp( -Math.pow((theta-315)/20,2) ))/b*(Math.cos(theta/ 180 * Math.PI)))+"px;";
+  ///best method
+  //-330, -130, -45, -15, 30, 45, 230, 315 [deg]でGaussianによる補正を入れた楕円で近似
+  //degは楕円の上部を0度として時計回りにthetaをとった
+      element.style.cssText="transform:rotate("+theta+"deg"+");position:absolute;z-index:2;left:"
+      +(center_x+r*(1
+        +0.035*Math.exp( -Math.pow((theta-45)/20,2) )
+        +0.05*Math.exp( -Math.pow((theta-230)/20,2) )
+        +0.05*Math.exp( -Math.pow((theta+130)/20,2) )
+        +0.01*Math.exp( -Math.pow((theta+15)/20,2) )
+        +0.01*Math.exp( -Math.pow((theta-345)/20,2) )
+        +0.01*Math.exp( -Math.pow((theta-30)/20,2))
+        +0.01*Math.exp( -Math.pow((theta+330)/20,2))
+        +0.015*Math.exp( -Math.pow((theta-135)/20,2))
+        +0.015*Math.exp( -Math.pow((theta+225)/20,2))
+        +0.015*Math.exp( -Math.pow((theta+45)/20,2) )
+        +0.015*Math.exp( -Math.pow((theta-315)/20,2) ))/a*(Math.sin(theta/180*Math.PI)))
+      +"px;top:"
+      +(center_y-r*(1
+        +0.035*Math.exp( -Math.pow((theta-45)/20,2) )
+        +0.05*Math.exp( -Math.pow((theta-230)/20,2) )
+        +0.05*Math.exp( -Math.pow((theta+130)/20,2) )
+        +0.01*Math.exp( -Math.pow((theta+15)/20,2) )
+        +0.01*Math.exp( -Math.pow((theta-345)/20,2) )
+        +0.01*Math.exp( -Math.pow((theta-30)/20,2))
+        +0.01*Math.exp( -Math.pow((theta+330)/20,2))
+        +0.015*Math.exp( -Math.pow((theta-135)/20,2))
+        +0.015*Math.exp( -Math.pow((theta+225)/20,2))
+        +0.015*Math.exp( -Math.pow((theta+45)/20,2) )
+        +0.015*Math.exp( -Math.pow((theta-315)/20,2) ))/b*(Math.cos(theta/ 180 * Math.PI)))
+      +"px;";
 
       element.setAttribute('class', 'input_text');
 
@@ -181,12 +228,14 @@ function dispMsg(str,theta,center_x,center_y,r){
       element.innerHTML = str;
       document.body.appendChild(element);
 
-      theta = theta + 7;
+      theta = theta + charSpace;
       return theta;
 
   }
 
 }
+
+
 
 
 
@@ -199,11 +248,11 @@ function dispMsg(str,theta,center_x,center_y,r){
   // var r = 200;
 
 //image2
-  var center_x = 298;
-  var center_y = 180;
-  var r = 145;
+//  var center_x = 298;
+//  var center_y = 180;
+//  var r = 145;
 
-  theta = -70;
+//  theta = -70;
 
 
 
@@ -212,16 +261,20 @@ function dispMsg(str,theta,center_x,center_y,r){
 
 function tbox1(){
 
-  var center_x = 289;
+  var center_x = 298;
   var center_y = 180;
   var r = 145;
 
   var str1=document.js.txtb.value;
 
-  Bangle_text.setTheta(dispMsg(str1 ,Bangle_text.theta,center_x,center_y,r));
+  var splits = str1.split("");
 
 
-
+  for(var i in splits){
+    if(Bangle_text.theta < 135 && Bangle_text.theta > -135){
+      Bangle_text.setTheta(dispMsg(splits[i] ,Bangle_text.theta,center_x,center_y,r,5));
+    }
+  }
 }
 
 
